@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form</title>
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
+
+      const form = document.querySelector("[data-form]");
+      const formInputs = document.querySelectorAll("[data-form-input]");
+      const formBtn = document.querySelector("[data-form-btn]");
+
+      // Add event to all form input fields
+      for (let i = 0; i < formInputs.length; i++) {
+        formInputs[i].addEventListener("input", function () {
+          // Check form validation
+          if (form.checkValidity()) {
+            formBtn.removeAttribute("disabled");
+          } else {
+            formBtn.setAttribute("disabled", "");
+          }
+        });
+      }
+
+      // Handle form submission
+      form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+          data[key] = value;
+        });
+
+        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+          .then(function (response) {
+            console.log("Success:", response);
+            alert("Email sent successfully!");
+          }, function (error) {
+            console.log("Error:", error);
+            alert("Failed to send email.");
+          });
+      });
+    });
+  </script>
+</head>
+<body>
+  <form data-form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" data-form-input required>
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" data-form-input required>
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" data-form-input required></textarea>
+    <button type="submit" data-form-btn disabled>Send</button>
+  </form>
+</body>
+</html>
